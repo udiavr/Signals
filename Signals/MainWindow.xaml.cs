@@ -34,17 +34,20 @@ namespace Signals
 
         private void SaveAlarm(Signal signal)
         {
+            //log out of bounds signal values
             File.AppendAllText("Alarm.csv", string.Format("{0}.{1},{2},{3}{4}", signal.TimeStamp, signal.TimeStamp.Millisecond, signal.Value, signal.SignalType, Environment.NewLine));
         }
 
         private bool CheckSignal(Signal signal)
         {
-            return ((signal.SignalType == SignalType.Sine && (signal.Value < 0 || signal.Value > 32)) ||
-                (signal.SignalType == SignalType.State && (signal.Value < 256 || signal.Value > 4095)));
+            //check if signal's values are in or out of bounds
+            return ((signal.SignalType == SignalType.Sine && (signal.Value < Transmitter.MinAnomalySineValue || signal.Value > Transmitter.MaxAnomalySineValue)) ||
+                (signal.SignalType == SignalType.State && (signal.Value < Transmitter.MinAnomalyStateValue || signal.Value > Transmitter.MaxAnomalyStateValue)));
         }
 
         private void SaveSignal(Signal signal)
         {
+            //log signal transmitted
             File.AppendAllText("Signal.csv", string.Format("{0}.{1},{2},{3}{4}", signal.TimeStamp, signal.TimeStamp.Millisecond, signal.Value, signal.SignalType, Environment.NewLine));
         }
     }
